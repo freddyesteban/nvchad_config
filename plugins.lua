@@ -47,6 +47,50 @@ local plugins = {
     end,
   },
 
+  -- Highlight other uses of the word under the cursor using either LSP, Tree-sitter, or regex matching
+  -- https://github.com/RRethy/vim-illuminate
+  {
+    "RRethy/vim-illuminate",
+    event = { "BufRead", "BufWinEnter", "BufNewFile" },
+    config = function()
+      require "custom.configs.vim-illuminate"
+    end,
+  },
+
+  -- It's not an LSP tool, the main goal of this plugin is add go tooling support in Neovim.
+  -- https://github.com/olexsmir/gopher.nvim
+  {
+    "olexsmir/gopher.nvim",
+    ft = "go",
+    config = function(_, opts)
+      require("gopher").setup(opts)
+    end,
+    build = function()
+      vim.cmd [[silent! GoInstallDeps]]
+    end
+  },
+
+  -- Git blame
+  {
+    "f-person/git-blame.nvim",
+    event = "BufRead",
+    config = function()
+      vim.cmd "highlight default link gitblame SpecialComment"
+      require("gitblame").setup { enabled = false }
+    end,
+  },
+
+  -- Vim motions
+  {
+    "phaazon/hop.nvim",
+    event = "BufRead",
+    config = function()
+      require("hop").setup()
+      vim.api.nvim_set_keymap("n", "s", ":HopChar2<cr>", { silent = true })
+      vim.api.nvim_set_keymap("n", "S", ":HopWord<cr>", { silent = true })
+    end,
+  }
+
   -- To make a plugin not be loaded
   -- {
   --   "NvChad/nvim-colorizer.lua",
